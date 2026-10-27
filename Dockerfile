@@ -52,4 +52,15 @@ COPY requirements.txt /tmp/requirements.txt
 RUN pip3 install --no-cache-dir --break-system-packages -r /tmp/requirements.txt \
     && rm /tmp/requirements.txt
 
+# Workaround Odoo 20 (bug en Website Builder): onIframeLoad explota con
+# "Cannot read properties of null (reading 'body')" cuando el iframe del editor
+# navega a un dominio externo (p.ej. el redirect 3DS de un payment provider
+# envía el iframe a staging.ptranz.com -> cross-origin -> contentDocument null).
+RUN python3 -c "\
+p='/usr/lib/python3/dist-packages/odoo/addons/website/static/src/client_actions/website_preview/website_builder_action.js';\
+s=open(p).read();\
+s=s.replace('iframe.contentDocument.body.setAttribute','iframe.contentDocument?.body?.setAttribute');\
+s=s.replace('.contentDocument.addEventListener','.contentDocument?.addEventListener');\
+open(p,'w').write(s)"
+
 USER odoo
