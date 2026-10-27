@@ -4,3 +4,16 @@
 markdown2==2.5.5
 # phonenumbers ships with the official image but outdated (8.12.57, from Ubuntu): this one has current prefixes.
 phonenumbers==9.0.41
+# iso4217 is required by Odoo (monetary currencies); pin it for reproducibility.
+iso4217==1.16.20260101
+# iso3166 is required by the vex_bac_credomatic_fac module (country codes).
+iso3166==3.0.0
+# xmlsig is required by the l10n_cr electronic invoice modules (XML signatures).
+xmlsig==0.1.3
+# Requirements of the l10n_cr (OdooCR) modules.
+jsonschema==4.26.0
+html2text==2025.4.15
+xlsxwriter==3.1.9
+paramiko==5.1.0
+# openpyxl is required to read xlsx files (e.g. CABYS catalog import).
+openpyxl==3.1.5

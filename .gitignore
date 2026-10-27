@@ -1,6 +1,10 @@
-# Your modules stay yours: they are not pushed to the template repo.
+# Your modules stay yours: they are not pushed to the template repo
+# (alvaces is its own repository and is kept out via the wildcard below).
 custom_addons/*
 !custom_addons/.gitkeep
+
+# Odoo Enterprise source is under its own commercial license; do not track it.
+enterprise/
 
 .DS_Store
 .idea

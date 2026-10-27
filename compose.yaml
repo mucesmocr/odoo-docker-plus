@@ -6,7 +6,7 @@ services:
         # Odoo build: "" = the one in the official image, a date (20261008) or "latest".
         ODOO_RELEASE: "latest"
         # System packages, space separated. Example: "libzbar0 poppler-utils"
-        APT_PACKAGES: ""
+        APT_PACKAGES: "libxml2-dev libxmlsec1-dev pkg-config"
     image: odoo20-custom
     container_name: odoo20docker
     depends_on:
@@ -14,7 +14,9 @@ services:
     ports:
       - "8069:8069"
     volumes:
-      - ./custom_addons:/mnt/extra-addons
+      - ./custom_addons/alvaces:/mnt/extra-addons
+      - ./custom_addons/alvaces/l10n_cr:/mnt/l10n_cr_addons:ro
+      - ./enterprise:/mnt/enterprise-addons:ro
       - ./config:/etc/odoo
       - odoo_data:/var/lib/odoo
     environment:
