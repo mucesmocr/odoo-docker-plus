@@ -22,7 +22,8 @@ services:
     environment:
       HOST: db
       USER: odoo
-      PASSWORD: Chesco510W4821XV4Uj57tSSV8z0wn
+      # Password shared by both Odoo containers; it comes from .env (git-ignored).
+      PASSWORD: ${POSTGRES_PASSWORD}
 
   db:
     # Odoo 20 requires PostgreSQL 16 or later.
@@ -30,11 +31,52 @@ services:
     container_name: pg17
     environment:
       POSTGRES_USER: odoo
-      POSTGRES_PASSWORD: Chesco510W4821XV4Uj57tSSV8z0wn
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: postgres
     volumes:
       - db_data:/var/lib/postgresql/data
 
+  # Odoo 19 alongside Odoo 20: same modules folder (custom_addons), its own
+  # PostgreSQL server (db19), its own config (config19) and host port (8079).
+  odoo19:
+    build:
+      context: .
+      dockerfile: Dockerfile.19
+      args:
+        # Odoo build: "" = the one in the official image, a date (20261027) or "latest".
+        ODOO_RELEASE: "latest"
+        # System packages, space separated. Example: "libzbar0 poppler-utils"
+        APT_PACKAGES: "libxml2-dev libxmlsec1-dev pkg-config"
+    image: odoo19-custom
+    container_name: odoo19docker
+    depends_on:
+      - db19
+    ports:
+      - "8079:8069"
+    volumes:
+      - ./custom_addons_odoo19/alvaces:/mnt/extra-addons
+      - ./custom_addons_odoo19/alvaces/l10n_cr:/mnt/l10n_cr_addons:ro
+      - ./enterprise_odoo19:/mnt/enterprise-addons:ro
+      - ./config19:/etc/odoo
+      - odoo19_data:/var/lib/odoo
+    environment:
+      HOST: db19
+      USER: odoo
+      PASSWORD: ${POSTGRES_PASSWORD}
+
+  db19:
+    # Odoo 19 works with PostgreSQL 13 or later; 16 is the tested choice.
+    image: postgres:16
+    container_name: pg19
+    environment:
+      POSTGRES_USER: odoo
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: postgres
+    volumes:
+      - db19_data:/var/lib/postgresql/data
+
 volumes:
   odoo_data:
   db_data:
+  odoo19_data:
+  db19_data:

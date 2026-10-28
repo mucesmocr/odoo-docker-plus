@@ -3,8 +3,13 @@
 custom_addons/*
 !custom_addons/.gitkeep
 
+# Same for the Odoo 19 instance: custom modules for its own folder.
+custom_addons_odoo19/*
+!custom_addons_odoo19/.gitkeep
+
 # Odoo Enterprise source is under its own commercial license; do not track it.
 enterprise/
+enterprise_odoo19/
 
 .DS_Store
 .idea
